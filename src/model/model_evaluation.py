@@ -126,13 +126,13 @@ def log_confusion_matrix(cm, dataset_name):
     mlflow.log_artifact(cm_file_path)
     plt.close()
 
-def save_model_info(run_id: str, model_path: str, file_path: str) -> None:
+def save_model_info(run_id: str, model_id: str, file_path: str) -> None:
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         # Create a dictionary with the info you want to save
         model_info = {
-            'run_id': run_id,
-            'model_path': model_path
+            "run_id": run_id,
+            "model_id": model_id
         }
         # Save the dictionary as a JSON file
         with open(file_path, 'w') as file:
@@ -173,16 +173,20 @@ def main():
             signature = infer_signature(input_example, model.predict(X_test_tfidf[:5]))  # <--- Added for signature
 
             # Log model with signature
-            mlflow.lightgbm.log_model(
-                model,
-                "lgbm_model",
-                signature=signature,  
-                input_example=input_example  
-            )
+            logged_model = mlflow.lightgbm.log_model(
+                            model,
+                            name="lgbm_model",
+                            signature=signature,
+                            input_example=input_example
+                        )
 
             # Save model info
             model_path = "lgbm_model"
-            save_model_info(run.info.run_id, model_path, 'reports/experiment_info.json')
+            save_model_info(
+                    run.info.run_id,
+                    logged_model.model_id,
+                    "reports/experiment_info.json"
+                )
 
             # Log the vectorizer as an artifact
             mlflow.log_artifact('models/tfidf_vectorizer.pkl')
