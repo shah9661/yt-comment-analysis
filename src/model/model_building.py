@@ -7,7 +7,6 @@ import logging
 import lightgbm as lgb
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# logging configuration
 logger = logging.getLogger('model_building')
 logger.setLevel('DEBUG')
 
@@ -68,8 +67,7 @@ def apply_tfidf(train_data: pd.DataFrame, max_features: int, ngram_range: tuple)
 
         logger.debug(f"TF-IDF transformation complete. Train shape: {X_train_tfidf.shape}")
 
-        # Save the vectorizer in the root directory
-        with open(os.path.join(get_root_directory(), 'tfidf_vectorizer.pkl'), 'wb') as f:
+        with open('models/tfidf_vectorizer.pkl', 'wb') as f:
             pickle.dump(vectorizer, f)
 
         logger.debug('TF-IDF applied with trigrams and data transformed')
@@ -101,27 +99,24 @@ def train_lgbm(X_train: np.ndarray, y_train: np.ndarray, learning_rate: float, m
         raise
 
 
-def save_model(model, file_path: str) -> None:
+def save_model(model,file_path:str)->None:
     try:
-        with open(file_path, 'wb') as file:
-            pickle.dump(model, file)
-        logger.debug('Model saved to %s', file_path)
+        os.makedirs(os.path.dirname(file_path),exist_ok=True)
+        with open(file_path,'wb') as file:
+            pickle.dump(model,file)
+        logger.debug(f'Model saved {file_path}')
+
+    except KeyboardInterrupt as e:
+        logger.error(f'KeyboardInterrput {e}')
+        raise
     except Exception as e:
-        logger.error('Error occurred while saving the model: %s', e)
+        logger.error(f"An unexpected error occurred while loading configuration: {e}")
         raise
 
 
-def get_root_directory() -> str:
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.abspath(os.path.join(current_dir, '../../'))
-
 def main():
     try:
-        # Get root directory and resolve the path for params.yaml
-        root_dir = get_root_directory()
-
-        # Load parameters from the root directory
-        params = load_params(os.path.join(root_dir, 'params.yaml'))
+        params = load_params('params.yaml')
         max_features = params['model_building']['max_features']
         ngram_range = tuple(params['model_building']['ngram_range'])
 
@@ -129,17 +124,13 @@ def main():
         max_depth = params['model_building']['max_depth']
         n_estimators = params['model_building']['n_estimators']
 
-        # Load the preprocessed training data from the interim directory
-        train_data = load_data(os.path.join(root_dir, 'data/interim/train_processed.csv'))
+        train_data = load_data('data/interim/train_processed.csv')
 
-        # Apply TF-IDF feature engineering on training data
         X_train_tfidf, y_train = apply_tfidf(train_data, max_features, ngram_range)
 
-        # Train the LightGBM model using hyperparameters from params.yaml
         best_model = train_lgbm(X_train_tfidf, y_train, learning_rate, max_depth, n_estimators)
 
-        # Save the trained model in the root directory
-        save_model(best_model, os.path.join(root_dir, 'lgbm_model.pkl'))
+        save_model(best_model, 'models/lgbm_model.pkl')
 
     except Exception as e:
         logger.error('Failed to complete the feature engineering and model building process: %s', e)
