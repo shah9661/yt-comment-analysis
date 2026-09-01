@@ -46,10 +46,7 @@ repo_owner = "shanshad0999"
 repo_name = "yt-comment-analysis"
 
 
-
-
 def load_data(file_path: str) -> pd.DataFrame:
-    """Load data from a CSV file."""
     try:
         df = pd.read_csv(file_path)
         df.fillna('', inplace=True)  # Fill any NaN values
@@ -61,7 +58,6 @@ def load_data(file_path: str) -> pd.DataFrame:
 
 
 def load_model(model_path: str):
-    """Load the trained model."""
     try:
         with open(model_path, 'rb') as file:
             model = pickle.load(file)
@@ -85,7 +81,6 @@ def load_vectorizer(vectorizer_path: str) -> TfidfVectorizer:
 
 
 def load_params(params_path: str) -> dict:
-    """Load parameters from a YAML file."""
     try:
         with open(params_path, 'r') as file:
             params = yaml.safe_load(file)
@@ -97,7 +92,6 @@ def load_params(params_path: str) -> dict:
 
 
 def evaluate_model(model, X_test: np.ndarray, y_test: np.ndarray):
-    """Evaluate the model and log classification metrics and confusion matrix."""
     try:
         # Predict and calculate classification metrics
         y_pred = model.predict(X_test)
@@ -113,7 +107,6 @@ def evaluate_model(model, X_test: np.ndarray, y_test: np.ndarray):
 
 
 def log_confusion_matrix(cm, dataset_name):
-    """Log confusion matrix as an artifact."""
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
     plt.title(f'Confusion Matrix for {dataset_name}')
@@ -166,13 +159,11 @@ def main():
             X_test_tfidf = vectorizer.transform(test_data['clean_comment'].values)
             y_test = test_data['category'].values
 
-            # Create a DataFrame for signature inference (using first few rows as an example)
-            input_example = pd.DataFrame(X_test_tfidf.toarray()[:5], columns=vectorizer.get_feature_names_out())  # <--- Added for signature
+            input_example = X_test_tfidf[:5] 
 
-            # Infer the signature
-            signature = infer_signature(input_example, model.predict(X_test_tfidf[:5]))  # <--- Added for signature
 
-            # Log model with signature
+            signature = infer_signature(input_example, model.predict(X_test_tfidf[:5])) 
+
             logged_model = mlflow.lightgbm.log_model(
                             model,
                             name="lgbm_model",
@@ -180,7 +171,6 @@ def main():
                             input_example=input_example
                         )
 
-            # Save model info
             model_path = "lgbm_model"
             save_model_info(
                     run.info.run_id,
