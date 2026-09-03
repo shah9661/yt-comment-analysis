@@ -1,4 +1,4 @@
 [core]
-    remote = local_dvc
-['remote "local_dvc"']
-    url = C:\Users\shans\AppData\Local\Temp
+    remote = s3remote
+['remote "s3remote"']
+    url = s3://shanshad
