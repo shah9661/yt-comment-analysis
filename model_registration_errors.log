@@ -1,0 +1,8 @@
+2026-08-31 23:45:31,830 - model_registration - ERROR - Error during model registration: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
+2026-08-31 23:45:31,830 - model_registration - ERROR - Failed to complete the model registration process: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
+2026-09-01 00:01:20,577 - model_registration - ERROR - Error during model registration: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
+2026-09-01 00:01:20,577 - model_registration - ERROR - Failed to complete the model registration process: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
+2026-09-01 00:11:14,248 - model_registration - ERROR - Error during model registration: Unable to find a logged_model with artifact_path lgbm_model under run a93f647948064ed7a4983fb7d2c4d075
+2026-09-01 00:11:14,252 - model_registration - ERROR - Failed to complete the model registration process: Unable to find a logged_model with artifact_path lgbm_model under run a93f647948064ed7a4983fb7d2c4d075
+2026-09-01 00:28:49,491 - model_registration - ERROR - Error during model registration: Unable to find a logged_model with artifact_path lgbm_model under run a93f647948064ed7a4983fb7d2c4d075
+2026-09-01 00:28:49,491 - model_registration - ERROR - Failed to complete the model registration process: Unable to find a logged_model with artifact_path lgbm_model under run a93f647948064ed7a4983fb7d2c4d075
