@@ -57,25 +57,28 @@ def load_data(file_path: str) -> pd.DataFrame:
 
 def apply_tfidf(train_data: pd.DataFrame, max_features: int, ngram_range: tuple) -> tuple:
     try:
-        vectorizer = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range)
+        vectorizer = TfidfVectorizer(
+            max_features=max_features,
+            ngram_range=ngram_range
+        )
 
         X_train = train_data['clean_comment'].values
         y_train = train_data['category'].values
 
-        # Perform TF-IDF transformation
         X_train_tfidf = vectorizer.fit_transform(X_train)
 
-        logger.debug(f"TF-IDF transformation complete. Train shape: {X_train_tfidf.shape}")
+        logger.debug(
+            f"TF-IDF transformation complete. Train shape: {X_train_tfidf.shape}"
+        )
 
-        with open('models/tfidf_vectorizer.pkl', 'wb') as f:
-            pickle.dump(vectorizer, f)
+        save_model(vectorizer, 'models/tfidf_vectorizer.pkl')
 
         logger.debug('TF-IDF applied with trigrams and data transformed')
         return X_train_tfidf, y_train
+
     except Exception as e:
         logger.error('Error during TF-IDF transformation: %s', e)
         raise
-
 
 def train_lgbm(X_train: np.ndarray, y_train: np.ndarray, learning_rate: float, max_depth: int, n_estimators: int) -> lgb.LGBMClassifier:
     try:

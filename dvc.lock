@@ -46,8 +46,8 @@ stages:
       size: 4134324
     - path: src/model/model_building.py
       hash: md5
-      md5: 270701c985af060b6ddbe6477549150d
-      size: 4724
+      md5: 4fcfb59a0ed7528d19e7b658f976ea8e
+      size: 4705
     params:
       params.yaml:
         model_building.learning_rate: 0.09
@@ -64,7 +64,7 @@ stages:
       size: 4116934
     - path: models/tfidf_vectorizer.pkl
       hash: md5
-      md5: 24661bbd91e63014eae90cbe828c69dd
+      md5: 63b582ac2ed5a6d66cd92ed0a16a7329
       size: 384115
   model_evaluation:
     cmd: python src/model/model_evaluation.py
