@@ -81,7 +81,7 @@ def test_get_model_info():
     assert model_info["model_name"] == MODEL_NAME
     assert model_info["model_version"] is not None
     assert model_info["run_id"] is not None
-    assert model_info["model_uri"] == (f"models:/{MODEL_NAME}{MODEL_ALIAS}")
+    assert model_info["model_uri"] == (f"models:/{MODEL_NAME}@{MODEL_ALIAS}")
 
 def test_load_model():
     model_info = get_model_info(model_name=MODEL_NAME,alias=MODEL_ALIAS)
