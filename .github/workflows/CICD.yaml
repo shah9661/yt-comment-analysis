@@ -82,5 +82,5 @@ jobs:
         if: success()
         env:
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-        RUN: |
+        run: |
           pytest -v tests/test_promote_model.py
