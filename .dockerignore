@@ -1,0 +1,4 @@
+**
+!Dockerfile
+!fastapi_app/
+!fastapi_app/**

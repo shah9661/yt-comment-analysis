@@ -122,7 +122,6 @@ def log_confusion_matrix(cm, dataset_name):
 def save_model_info(run_id: str, model_id: str, file_path: str) -> None:
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        # Create a dictionary with the info you want to save
         model_info = {
             "run_id": run_id,
             "model_id": model_id

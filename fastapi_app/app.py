@@ -56,6 +56,10 @@ def predict(request: PredictionRequest):
             "comment": cleaned_comments,
             "prediction": prediction.tolist()
         }
+
+    except HTTPException:
+        raise
+    
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -98,6 +102,8 @@ def generate_chart(request: SentimentCounts):
         img_io.seek(0)
         plt.close()
         return StreamingResponse(img_io,media_type="image/png")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -128,6 +134,8 @@ def generate_wordcloud(request:PredictionRequest):
         wordcloud.to_image().save(img_io, format='PNG')
         img_io.seek(0)
         return StreamingResponse(img_io, media_type="image/png")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -204,6 +212,8 @@ def generate_trend_graph(request: TrendGraphRequest):
         img_io.seek(0)
         plt.close()
         return StreamingResponse(img_io,media_type="image/png")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
