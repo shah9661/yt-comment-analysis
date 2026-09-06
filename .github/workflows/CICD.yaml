@@ -85,3 +85,53 @@ jobs:
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
         run: |
           pytest -v tests/test_promote_model.py
+      
+
+      - name: Login to AWS ECR
+        if: success()
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID_EC2_ECR }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY_EC2_ECR }}
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 213470585605.dkr.ecr.eu-north-1.amazonaws.com
+      
+
+      - name: Build Docker image
+        if: success()
+        run: |
+          docker build -t yt_comment_analysis .
+
+      - name: Tag Docker image
+        if: success()
+        run: |
+          docker tag yt_comment_analysis:latest 213470585605.dkr.ecr.eu-north-1.amazonaws.com/yt_comment_analysis:latest  
+      
+
+      - name: Push Docker image to AWS ECR
+        if: success()
+        run: |
+          docker push 213470585605.dkr.ecr.eu-north-1.amazonaws.com/yt_comment_analysis:latest
+
+      
+      - name: Deploy to EC2
+        if: success()
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          echo "$EC2_SSH_KEY" > ec2-key.pem
+          chmod 600 ec2-key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem $EC2_USERNAME@$EC2_HOST << EOF
+
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 213470585605.dkr.ecr.eu-north-1.amazonaws.com
+
+          docker pull 213470585605.dkr.ecr.eu-north-1.amazonaws.com/yt_comment_analysis:latest
+
+          docker stop yt-sentiment-api || true
+          docker rm yt-sentiment-api || true
+
+          docker run -d --name yt-sentiment-api -p 8000:8000 -e DAGSHUB_TOKEN="$DAGSHUB_TOKEN" 213470585605.dkr.ecr.eu-north-1.amazonaws.com/yt_comment_analysis:latest
+          
+          EOF
+          rm -f ec2-key.pem
