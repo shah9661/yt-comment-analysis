@@ -134,4 +134,5 @@ jobs:
           docker run -d --name yt-sentiment-api -p 8000:8000 -e DAGSHUB_TOKEN="$DAGSHUB_TOKEN" 213470585605.dkr.ecr.eu-north-1.amazonaws.com/yt_comment_analysis:latest
           
           EOF
+          
           rm -f ec2-key.pem
