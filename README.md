@@ -110,16 +110,15 @@ The `(1, 3)` range represents **unigrams, bigrams, and trigrams**.
 
 ## Model Evaluation
 
-### Test Performance
+### Classification Report
 
-| Metric | Score |
-|---|---:|
-| **Weighted F1-score** | **86.67%** |
-| **Macro F1-score** | **85.78%** |
-| Weighted Precision | 86.90% |
-| Weighted Recall | 86.76% |
-| Macro Precision | 85.88% |
-| Macro Recall | 85.97% |
+| Class | Precision | Recall | F1-Score |
+|---|---:|---:|---:|
+| 0 | 86.04% | 96.02% | 90.76% |
+| 1 | 91.01% | 83.62% | 87.16% |
+| -1 | 80.59% | 78.28% | 79.42% |
+| **Macro Avg** | **85.88%** | **85.97%** | **85.78%** |
+| **Weighted Avg** | **86.90%** | **86.76%** | **86.67%** | |
 
 Because the dataset is imbalanced, **Macro F1-score** is reported alongside weighted metrics to give equal importance to each class.
 
